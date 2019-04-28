@@ -1,0 +1,17 @@
+<launch>
+  <arg name="model" default="$(find rc_plane)/urdf/rc_plane.xacro" />
+  <arg name="use_gui" default="true" />
+  <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+    <param name="use_gui" value="$(arg use_gui)" />
+    <rosparam param="source_list">["rc_plane_joint_states"]</rosparam>
+  </node>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  <node pkg="rc_plane" type="visualizer.py" name="visualizer">
+    <param name="tf_prefix" value="" />
+  </node>
+</launch>

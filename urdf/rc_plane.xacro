@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<robot name="rc_plane" 
+  xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="base_length" value="0.6" />
+  <xacro:property name="base_radius" value="0.06" />
+  <xacro:property name="wing_length" value="0.3" />
+  <xacro:property name="wing_width" value="0.1" />
+
+  <material name="white">
+    <color rgba="1 1 1 1" />
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="yellow">
+    <color rgba="1 1 0 1"/>
+  </material>
+
+  <xacro:macro name="wing" params="name length:=0 width:=0">
+    <xacro:property name="wing_thickness" value="0.005" />
+    <link name="${name}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${width} ${length} ${wing_thickness}" />
+        </geometry>
+        <material name="white" />
+      </visual>
+    </link>
+
+    <link name="${name}_aileron">
+      <visual>
+        <origin xyz="${-width/8} 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${width/4} ${length} ${wing_thickness}" />
+        </geometry>
+        <material name="red" />
+      </visual>
+    </link>
+
+    <joint name="${name}_aileron_joint" type="revolute">
+      <parent link="${name}_link" />
+      <child link="${name}_aileron" />
+      <origin xyz="${-width/2} 0 0" rpy="0 0 0" />
+      <axis xyz="0 1 0"/>
+      <limit effort="1000.0" lower="${-pi/2}" upper="${pi/2}" velocity="0.5"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="engine" params="name">
+    <xacro:property name="wing_thickness" value="0.005" />
+    <link name="${name}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.05 0.05 0.05" />
+        </geometry>
+        <material name="yellow" />
+      </visual>
+    </link>
+
+    <link name="${name}_propeller">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.2 0.02" />
+        </geometry>
+        <material name="red" />
+      </visual>
+    </link>
+
+    <joint name="${name}_propeller_joint" type="continuous">
+      <parent link="${name}_link" />
+      <child link="${name}_propeller" />
+      <origin xyz="0.03 0 0" rpy="0 0 0" />
+      <axis xyz="1 0 0"/>
+    </joint>
+  </xacro:macro>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0" />
+      <geometry>
+        <cylinder length="${base_length}" radius="${base_radius}"/>
+      </geometry>
+      <material name="white" />
+    </visual>
+  </link>
+
+  <xacro:wing name="right_wing" length="${wing_length}" width="${wing_width}" />
+
+  <joint name="right_wing_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_wing_link"/>
+    <origin xyz="0 ${-wing_length/2-base_radius} 0" rpy="0 0 0" />
+  </joint>
+
+  <xacro:wing name="left_wing" length="${wing_length}" width="${wing_width}" />
+
+  <joint name="left_wing_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_wing_link"/>
+    <origin xyz="0 ${wing_length/2+base_radius} 0" rpy="0 0 0" />
+  </joint>
+
+  <xacro:wing name="horizontal_stabilizer" length="0.3" width="0.1" />
+
+  <joint name="horizontal_stabilizer_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="horizontal_stabilizer_link"/>
+    <origin xyz="${-base_length/2-0.05} 0 0" rpy="0 0 0" />
+  </joint>
+
+  <xacro:wing name="vertical_stabilizer" length="0.2" width="0.1" />
+
+  <joint name="vertical_stabilizer_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="vertical_stabilizer_link"/>
+    <origin xyz="${-base_length/2-0.05} 0 0.1" rpy="${pi/2} 0 0" />
+  </joint>
+
+  <xacro:engine name="front_engine" />
+
+  <joint name="front_engine_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="front_engine_link"/>
+    <origin xyz="${base_length/2} 0 0" rpy="0 0 0" />
+  </joint>
+
+</robot>

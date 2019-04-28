@@ -1,0 +1,7 @@
+<launch>
+  <arg name="dev" default="js2" />
+  <node pkg="joy" type="joy_node" name="joy_node" respawn="true">
+    <param name="dev" type="string" value="/dev/input/$(arg dev)" />
+  </node>
+  <node pkg="rc_plane" type="joy_control.py" name="joy_control" respawn="true" />
+</launch>
