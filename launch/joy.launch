@@ -2,6 +2,13 @@
   <arg name="dev" default="js2" />
   <node pkg="joy" type="joy_node" name="joy_node" respawn="true">
     <param name="dev" type="string" value="/dev/input/$(arg dev)" />
+    <param name="autorepeat_rate" value="20" />
+    <param name="coalesce_interval" value="0.01" />
+  </node>
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node" respawn="true">
+    <param name="port" value="/dev/ttyUSB0" />
+    <param name="baud" value="115200" />
   </node>
   <node pkg="rc_plane" type="joy_control.py" name="joy_control" respawn="true" />
+  <node pkg="topic_tools" type="throttle" name="rc_plane_cmd_throttle" respawn="true" args="messages rc_plane_cmd 20" />
 </launch>

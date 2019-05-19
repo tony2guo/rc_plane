@@ -36,14 +36,15 @@ def joy_cb(msg):
         throttle = msg.axes[axes['LY']]
     rudder = msg.axes[axes['LX']]
     elevator = msg.axes[axes['RY']]
-    ailerons = msg.axes[axes['RX']]
+    aileron = msg.axes[axes['RX']]
 
     pub_msg = ByteMultiArray()
     factor = 127
     pub_msg.data.append(throttle * factor)
     pub_msg.data.append(rudder * factor)
     pub_msg.data.append(elevator * factor)
-    pub_msg.data.append(ailerons * factor)
+    pub_msg.data.append(aileron * factor)
+    pub_msg.data.append(-aileron * factor)
 
     rc_plane_cmd_Publisher.publish(pub_msg)
 
