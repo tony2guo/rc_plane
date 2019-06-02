@@ -2,10 +2,10 @@
 
 import rospy
 from sensor_msgs.msg import JointState
-from std_msgs.msg import ByteMultiArray
+from std_msgs.msg import Int8MultiArray
 import math
 
-cmd_msg = ByteMultiArray()
+cmd_msg = Int8MultiArray()
 
 
 def rc_plane_cmd_cb(msg):
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     joint_Publisher = rospy.Publisher(
         "rc_plane_joint_states", JointState, queue_size=1)
     tm_robot_coordinate_Subscriber = rospy.Subscriber(
-        "rc_plane_cmd_throttle", ByteMultiArray, rc_plane_cmd_cb)
+        "rc_plane_cmd_throttle", Int8MultiArray, rc_plane_cmd_cb)
     r = rospy.Rate(10)
     pub_msg = JointState()
     tf_prefix = rospy.get_param("~tf_prefix", "")
@@ -28,12 +28,12 @@ if __name__ == '__main__':
         "left_wing_aileron_joint"
     ]
     pub_msg.name = [tf_prefix + joint for joint in joint_list]
-    rospy.wait_for_message("rc_plane_cmd_throttle", ByteMultiArray)
+    rospy.wait_for_message("rc_plane_cmd_throttle", Int8MultiArray)
     propeller_position = 0
     factor = 127.0
     while not rospy.is_shutdown():
         pub_msg.header.stamp = rospy.Time.now()
-        throttle = cmd_msg.data[0] / factor
+        throttle = cmd_msg.data[0] / factor + 1
         rudder = cmd_msg.data[1] / factor
         elevator = cmd_msg.data[2] / factor
         aileron_right = cmd_msg.data[3] / factor

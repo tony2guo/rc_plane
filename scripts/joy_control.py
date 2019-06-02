@@ -2,7 +2,7 @@
 
 import rospy
 from sensor_msgs.msg import Joy
-from std_msgs.msg import ByteMultiArray
+from std_msgs.msg import Int8MultiArray
 
 
 buttons = {
@@ -31,14 +31,14 @@ axes = {
 
 
 def joy_cb(msg):
-    throttle = 0
+    throttle = -1
     if msg.axes[axes['LY']] > 0:
-        throttle = msg.axes[axes['LY']]
+        throttle += msg.axes[axes['LY']] * 2
     rudder = msg.axes[axes['LX']]
     elevator = msg.axes[axes['RY']]
     aileron = msg.axes[axes['RX']]
 
-    pub_msg = ByteMultiArray()
+    pub_msg = Int8MultiArray()
     factor = 127
     pub_msg.data.append(throttle * factor)
     pub_msg.data.append(rudder * factor)
@@ -52,6 +52,6 @@ def joy_cb(msg):
 if __name__ == '__main__':
     rospy.init_node("joy_control", anonymous=True)
     rc_plane_cmd_Publisher = rospy.Publisher(
-        "rc_plane_cmd", ByteMultiArray, queue_size=1)
+        "rc_plane_cmd", Int8MultiArray, queue_size=1)
     joy_Subscriber = rospy.Subscriber("joy", Joy, joy_cb)
     rospy.spin()

@@ -9,23 +9,23 @@
 #include <RF24.h>
 #include <Wire.h>
 #include <ros.h>
-#include <std_msgs/ByteMultiArray.h>
+#include <std_msgs/Int8MultiArray.h>
 
 RF24 radio(A1, A0);   // nRF24L01 (CE, CSN)
 const byte address[6] = "00001"; // Address
 
 // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 struct Data_Package {
-  byte esc;
-  byte servo1;
-  byte servo2;
-  byte servo3;
-  byte servo4;
+  int8_t esc;
+  int8_t servo1;
+  int8_t servo2;
+  int8_t servo3;
+  int8_t servo4;
 };
 
 Data_Package data; //Create a variable with the above structure
 
-void rc_plane_cmdCB(const std_msgs::ByteMultiArray& msg)
+void rc_plane_cmdCB(const std_msgs::Int8MultiArray& msg)
 {
   data.esc=msg.data[0];
   data.servo1=msg.data[1];
@@ -35,7 +35,7 @@ void rc_plane_cmdCB(const std_msgs::ByteMultiArray& msg)
 }
 
 ros::NodeHandle nh;
-ros::Subscriber<std_msgs::ByteMultiArray> rc_cmd_sub("rc_plane_cmd_throttle", rc_plane_cmdCB);
+ros::Subscriber<std_msgs::Int8MultiArray> rc_cmd_sub("rc_plane_cmd_throttle", rc_plane_cmdCB);
 
 void setup() {
   //Serial.begin(115200); //rosserial can't use this with arduino pro mini, but ok with Leonardo?

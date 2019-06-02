@@ -24,11 +24,11 @@ int escValue, servo1Value, servo2Value;
 
 // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 struct Data_Package {
-  byte esc;
-  byte servo1;
-  byte servo2;
-  byte servo3;
-  byte servo4;
+  int8_t esc;
+  int8_t servo1;
+  int8_t servo2;
+  int8_t servo3;
+  int8_t servo4;
 };
 
 Data_Package data; //Create a variable with the above structure
@@ -62,30 +62,40 @@ void loop() {
   // Controlling servos
   //servo1Value = map(data.servo1, 0, 255, 0, 180);
   //servo2Value = map(data.servo2, 0, 255, 0, 180);
-  servo1.write(map(data.servo1, 0, 255, 0, 180));
-  servo2.write(map(data.servo2, 0, 255, 0, 180));
-  servo3.write(map(data.servo3, 0, 255, 0, 180));
-  servo4.write(map(data.servo4, 0, 255, 0, 180));
+  servo1.write(map(data.servo1, -127, 127, 0, 180));
+  servo2.write(map(data.servo2, -127, 127, 0, 180));
+  servo3.write(map(data.servo3, -127, 127, 0, 180));
+  servo4.write(map(data.servo4, -127, 127, 0, 180));
   // Controlling brushless motor with ESC
   //escValue = map(data.esc, 0, 255, 1000, 2000); // Map the receiving value form 0 to 255 to 0 1000 to 2000, values used for controlling ESCs
-  esc.writeMicroseconds(map(data.esc, 0, 255, 1000, 2000)); // Send the PWM control singal to the ESC
+  esc.writeMicroseconds(map(data.esc, -127, 255, 1000, 2000)); // Send the PWM control singal to the ESC
 //  Serial.print(data.esc);
 //  Serial.print(" ");
+//  Serial.print(map(data.esc, -127, 127, 1000, 2000));
+//  Serial.print(", ");
 //  Serial.print(data.servo1);
 //  Serial.print(" ");
+//  Serial.print(map(data.servo1, -127, 127, 0, 180));
+//  Serial.print(", ");
 //  Serial.print(data.servo2);
 //  Serial.print(" ");
+//  Serial.print(map(data.servo2, -127, 127, 0, 180));
+//  Serial.print(", ");
 //  Serial.print(data.servo3);
 //  Serial.print(" ");
+//  Serial.print(map(data.servo3, -127, 127, 0, 180));
+//  Serial.print(", ");
 //  Serial.print(data.servo4);
+//  Serial.print(" ");
+//  Serial.print(map(data.servo4, -127, 127, 0, 180));
 //  Serial.print(" \n");
 }
 
 void resetData() {
   // Reset the values when there is no radio connection - Set initial default values
-  data.esc = 0;
-  data.servo1 = 90;
-  data.servo2 = 90;
-  data.servo3 = 90;
-  data.servo4 = 90;
+  data.esc = -127;
+  data.servo1 = 0;
+  data.servo2 = 0;
+  data.servo3 = 0;
+  data.servo4 = 0;
 }
