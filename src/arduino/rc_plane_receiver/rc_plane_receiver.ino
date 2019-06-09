@@ -38,8 +38,8 @@ void setup() {
   radio.begin();
   radio.openReadingPipe(0, address);
   radio.setAutoAck(false);
-  radio.setDataRate(RF24_250KBPS);
-  radio.setPALevel(RF24_PA_LOW);
+  radio.setDataRate(RF24_2MBPS);//RF24_250KBPS RF24_1MBPS RF24_2MBPS
+  radio.setPALevel(RF24_PA_MAX);//RF24_PA_MIN RF24_PA_LOW RF24_PA_HIGH RF24_PA_MAX
   radio.startListening(); //  Set the module as receiver
   resetData();
   esc.attach(0);
@@ -51,7 +51,7 @@ void setup() {
 void loop() {
   // Check whether we keep receving data, or we have a connection between the two modules
   currentTime = millis();
-  if ( currentTime - lastReceiveTime > 1000 ) { // If current time is more then 1 second since we have recived the last data, that means we have lost connection
+  if ( currentTime - lastReceiveTime > 200 ) { // If current time is more then 1 second since we have recived the last data, that means we have lost connection
     resetData(); // If connection is lost, reset the data. It prevents unwanted behavior, for example if a drone jas a throttle up, if we lose connection it can keep flying away if we dont reset the function
   }
   // Check whether there is data to be received

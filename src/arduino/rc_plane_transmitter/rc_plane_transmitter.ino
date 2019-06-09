@@ -16,7 +16,7 @@ const byte address[6] = "00001"; // Address
 
 // Max size of this struct is 32 bytes - NRF24L01 buffer limit
 struct Data_Package {
-  int8_t esc;
+  int8_t esc = -127;
   int8_t servo1;
   int8_t servo2;
   int8_t servo3;
@@ -44,8 +44,8 @@ void setup() {
   radio.begin();
   radio.openWritingPipe(address);
   radio.setAutoAck(false);
-  radio.setDataRate(RF24_250KBPS);
-  radio.setPALevel(RF24_PA_LOW);
+  radio.setDataRate(RF24_2MBPS);//RF24_250KBPS RF24_1MBPS RF24_2MBPS
+  radio.setPALevel(RF24_PA_MAX);//RF24_PA_MIN RF24_PA_LOW RF24_PA_HIGH RF24_PA_MAX
 
   nh.getHardware()->setBaud(115200);
   nh.initNode();
